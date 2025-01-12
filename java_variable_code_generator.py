@@ -7,7 +7,8 @@ class JavaVariableCodeGenerator:
     
     def __init__(self, var_type: str, name: str, io_type=None, 
                 get_method=None, have_get=True, set_method=None, have_set=True, 
-                instance_method=None, instance_init_value=None):
+                # instance_method=None, 
+                instance_init_value=None):
         self.var_type = var_type
         self.name = name
         self.name2 = name[0].upper() + name[1:]
@@ -17,7 +18,7 @@ class JavaVariableCodeGenerator:
         self.have_get = have_get
         self.have_set = have_set
         self.instance_init_value = instance_init_value
-        self.instance_method = instance_method
+        # self.instance_method = instance_method
     
     def get_variable_delcaration(self):
         return "\t" + self.var_type + " " + self.name + ";\n"
@@ -87,8 +88,8 @@ class JavaVariableCodeGenerator:
         return f'{self.name} = new {self.var_type}({init_value});'
     
     def instance_getter(self):
-        if self.instance_method is None:
-            return ''
+        # if self.instance_method is None:
+        #     return ''
         init_value = ''
         if self.instance_init_value is not None:
             init_value = self.instance_init_value
