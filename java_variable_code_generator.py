@@ -1,7 +1,8 @@
 class JavaVariableCodeGenerator:
     
-    def __init__(self, var_type: str, name: str, io_type=None, 
-                get_method=None, have_get=True, set_method=None, have_set=True, 
+    def __init__(self, var_type: str, name='factory', io_type=None, 
+                get_method=None, have_get=True, 
+                set_method=None, have_set=True, 
                 instance_init_value=None):
         self.var_type = var_type
         self.name = name
@@ -15,6 +16,16 @@ class JavaVariableCodeGenerator:
     
     def get_variable_delcaration(self):
         return "\t" + self.var_type + " " + self.name + ";\n"
+        
+    def generate_variable(self, name):
+        v = JavaVariableCodeGenerator(
+            var_type=self.var_type, name=name, io_type=self.io_type,
+            get_method=self.get_method, have_get=self.have_get,
+            set_method=self.set_method, have_set=self.have_set,
+            instance_init_value=self.instance_init_value
+        )
+        return v
+        
 
     def getter_code(self):
         if self.have_get is False:
@@ -86,10 +97,11 @@ def write_class_to_file(filename, classname, v_lists, package_name=None):
         constructor_code = f'\tpublic {classname}(){{\n'
         
         for v_list in v_lists:
-            for v in v_list: 
+            for v in v_list:
                 code += v.get_variable_delcaration()
                 constructor_code += '\t\t' + v.generate_var_allocation_code()
             code += '\n'
+            constructor_code += '\n'
         constructor_code += '\t}\n'
         code += '\n\n'
         
@@ -105,9 +117,9 @@ def write_class_to_file(filename, classname, v_lists, package_name=None):
         
     file.close()
         
-def get_v_list(v_names, v_type: str, io_type=None, get_method=None, have_get=True, set_method=None, have_set=True, instance_init_value=None):
+def get_v_list(v_names, factory):
     v_list = []
     for v_name in v_names:
-        v_list.append(JavaVariableCodeGenerator(v_type, v_name, io_type=io_type, get_method=get_method, set_method=set_method, instance_init_value= instance_init_value))
+        v_list.append(factory.generate_variable(v_name))
     return v_list
 
