@@ -25,11 +25,11 @@ class JavaVariableCodeGenerator:
             return_type = self.io_type
         else: 
             return_type = self.var_type
-                    
+
         if self.get_method is None and self.io_type is None:
             return  (
                 f'\tpublic {return_type} get{self.name2}(){{\n'
-                f'\t\treturn {self.name}Instance();\n'
+                f'\t\treturn {self.name};\n'
                 f'\t}}\n\n'
             )
         if self.get_method is None:
@@ -41,7 +41,7 @@ class JavaVariableCodeGenerator:
         else:
             return (
                 f'\tpublic {return_type} get{self.name2}(){{\n'
-                f'\t\treturn {self.name}Instance().{self.get_method}();\n'
+                f'\t\treturn {self.name}.{self.get_method}();\n'
                 '\t}\n\n'
             )
             
@@ -60,7 +60,7 @@ class JavaVariableCodeGenerator:
         else:
             return (
                 f'\tpublic void set{self.name2}({self.io_type} value){{\n'
-                f'\t\t{self.name}Instance().{self.set_method}(value);\n'
+                f'\t\t{self.name}.{self.set_method}(value);\n'
                 '\t}\n\n'
             )
             
@@ -68,7 +68,7 @@ class JavaVariableCodeGenerator:
         init_value = ''
         if self.instance_init_value is not None:
             init_value = self.instance_init_value
-        return f'{self.name} = new {self.var_type}({init_value});'
+        return f'{self.name} = new {self.var_type}({init_value});\n'
             
     def accessor_code(self):
         return self.getter_code() + self.setter_code() +'\n\n'
@@ -83,12 +83,17 @@ def write_class_to_file(filename, classname, v_lists, package_name=None):
             code += 'package ' + package_name + ';\n'
 
         code += '\npublic class '+classname+' {\n'
+        constructor_code = f'\tpublic {classname}(){{\n'
         
         for v_list in v_lists:
             for v in v_list: 
                 code += v.get_variable_delcaration()
+                constructor_code += '\t\t' + v.generate_var_allocation_code()
             code += '\n'
+        constructor_code += '\t}\n'
+        code += '\n\n'
         
+        code += constructor_code
         code += '\n\n'
         
         for v_list in v_lists:
