@@ -25,4 +25,4 @@ cat1 = ['umido', 'vetro',
 v_list = get_v_list(cat1, 'Waste', have_set=False, instance_init_value='this, frazioniEstraneeInstance()')
 
 v_lists = [v_list]
-write_class_to_file('Analysis.txt', 'Analysis', v_lists, package_name='myapps.reportanalisi.data')
+write_class_to_file('build/Analysis.txt', 'Analysis', v_lists, package_name='myapps.reportanalisi.data')

@@ -1,13 +1,7 @@
-# v = [type, name, io_type, get_method, set_method]
-# if get_method == None then the getters will return the variable itself:
-#   -> 'return name;'
-# idem for the setter
-
 class JavaVariableCodeGenerator:
     
     def __init__(self, var_type: str, name: str, io_type=None, 
                 get_method=None, have_get=True, set_method=None, have_set=True, 
-                # instance_method=None, 
                 instance_init_value=None):
         self.var_type = var_type
         self.name = name
@@ -18,15 +12,10 @@ class JavaVariableCodeGenerator:
         self.have_get = have_get
         self.have_set = have_set
         self.instance_init_value = instance_init_value
-        # self.instance_method = instance_method
     
     def get_variable_delcaration(self):
         return "\t" + self.var_type + " " + self.name + ";\n"
 
-    '''
-    if v[3] is None: the variable is not a wrapped type
-    else there is a method since the variable is wrapped
-    '''
     def getter_code(self):
         if self.have_get is False:
             return ''
@@ -59,12 +48,6 @@ class JavaVariableCodeGenerator:
     def setter_code(self):
         if self.have_set is False:
             return ''
-        
-        input_type = ''
-        if self.io_type is not None:
-            input_type = self.io_type
-        else: 
-            input_type = self.var_type
                     
         if self.set_method is None and self.io_type is None:
             return  ''
@@ -81,30 +64,14 @@ class JavaVariableCodeGenerator:
                 '\t}\n\n'
             )
             
-    def generate_instance_code(self):
+    def generate_var_allocation_code(self):
         init_value = ''
         if self.instance_init_value is not None:
             init_value = self.instance_init_value
         return f'{self.name} = new {self.var_type}({init_value});'
-    
-    def instance_getter(self):
-        # if self.instance_method is None:
-        #     return ''
-        init_value = ''
-        if self.instance_init_value is not None:
-            init_value = self.instance_init_value
-
-        return (
-            f'\tpublic {self.var_type} {self.name}Instance(){{\n'
-            f'\t\tif ({self.name} == null){{\n'
-            f'\t\t\t{self.generate_instance_code};\n'
-            '\t\t}\n'
-            f'\t\treturn {self.name};\n'
-            '\t}\n\n'
-        )
             
     def accessor_code(self):
-        return self.getter_code() + self.setter_code() + self.instance_getter() +'\n\n'
+        return self.getter_code() + self.setter_code() +'\n\n'
         
 
 
