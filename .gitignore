@@ -1,3 +1,7 @@
+# files
+analisi_class_generator.py 
+# waste_generator.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

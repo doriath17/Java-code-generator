@@ -3,14 +3,17 @@
 TODO: una variabile puo essere da inizializzare -> new 
 oppure puo essere passata come parametro nel costruttore
 
-TODO: aggiungere la visibilita della variabile
-
 TODO: 
 se la variabile ha un set_method e un wrapper (il metodo serve per ricavare il valore)
 se ha have_set / have_get: si riferiscono alla variabile stessa, cosi com e.
 
 TODO: 
 creare una classe python: JavaClassGenerator
+
+TODO:
+simple getters or setters could be written in one single line:
+    public Rifiuto getImballagi() { return imballagi; }
+
 '''
 
 
@@ -59,23 +62,12 @@ class JavaVariableCodeGenerator:
             return_type = self.v_type
 
         if self.get_method is None and self.io_type is None:
-            return  (
-                f'\tpublic {return_type} get{self.name2}(){{\n'
-                f'\t\treturn {self.name};\n'
-                f'\t}}\n\n'
-            )
+            return f'\tpublic {return_type} get{self.name2}() {{ return {self.name}; }}\n'
         if self.get_method is None:
-            return  (
-                f'\tpublic {return_type} get{self.name2}(){{\n'
-                f'\t\treturn this.{self.name};\n'
-                f'\t}}\n\n'
-            )
+            return f'\tpublic {return_type} get{self.name2}() {{ return this.{self.name}; }}\n'
         else:
-            return (
-                f'\tpublic {return_type} get{self.name2}(){{\n'
-                f'\t\treturn {self.name}.{self.get_method}();\n'
-                '\t}\n\n'
-            )
+            return f'\tpublic {return_type} get{self.name2}() {{ return {self.name}.{self.get_method}(); }}\n'
+
             
     def setter_code(self):
         if self.have_set is False:
@@ -84,17 +76,11 @@ class JavaVariableCodeGenerator:
         if self.set_method is None and self.io_type is None:
             return  ''
         if self.set_method is None:
-            return  (
-                f'\tpublic void set{self.name2}({self.io_type} value){{\n'
-                f'\t\tthis.{self.name} = value;\n'
-                f'\t}}\n\n'
-            )
+            return f'\tpublic void set{self.name2}({self.io_type} value) {{ this.{self.name} = value; }}\n'
+
         else:
-            return (
-                f'\tpublic void set{self.name2}({self.io_type} value){{\n'
-                f'\t\t{self.name}.{self.set_method}(value);\n'
-                '\t}\n\n'
-            )
+            return f'\tpublic void set{self.name2}({self.io_type} value) {{ {self.name}.{self.set_method}(value); }}\n'
+
             
     def generate_var_allocation_code(self):
         init_value = ''
@@ -103,7 +89,7 @@ class JavaVariableCodeGenerator:
         return f'{self.name} = new {self.v_type}({init_value});\n'
             
     def accessor_code(self):
-        return self.getter_code() + self.setter_code() +'\n\n'
+        return self.getter_code() + self.setter_code() +'\n'
 
 
 def write_class_to_file(filename, classname, v_lists, package_name=None):
