@@ -10,10 +10,6 @@ se ha have_set / have_get: si riferiscono alla variabile stessa, cosi com e.
 TODO: 
 creare una classe python: JavaClassGenerator
 
-TODO:
-simple getters or setters could be written in one single line:
-    public Rifiuto getImballagi() { return imballagi; }
-
 '''
 
 
@@ -127,4 +123,3 @@ def get_v_list(v_names, factory):
     for v_name in v_names:
         v_list.append(factory.generate_variable(v_name))
     return v_list
-
