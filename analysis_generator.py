@@ -6,7 +6,7 @@ v_names1 = [
     'sampleWeight'
 ]
 f1 = JavaVariableCodeGenerator(
-    var_type='SimpleObjectProperty<Double>', io_type='Double',
+    v_type='SimpleObjectProperty<Double>', io_type='Double',
     get_method='getValue',
     set_method='setValue',
     instance_init_value='0.0'

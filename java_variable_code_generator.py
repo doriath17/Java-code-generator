@@ -1,25 +1,46 @@
+
+'''
+TODO: una variabile puo essere da inizializzare -> new 
+oppure puo essere passata come parametro nel costruttore
+
+TODO: aggiungere la visibilita della variabile
+
+TODO: 
+se la variabile ha un set_method e un wrapper (il metodo serve per ricavare il valore)
+se ha have_set / have_get: si riferiscono alla variabile stessa, cosi com e.
+
+TODO: 
+creare una classe python: JavaClassGenerator
+'''
+
+
 class JavaVariableCodeGenerator:
     
-    def __init__(self, var_type: str, name='factory', io_type=None, 
+    def __init__(self,
+                v_type,
+                visibility='private',
+                name='factory', io_type=None, 
                 get_method=None, have_get=True, 
-                set_method=None, have_set=True, 
-                instance_init_value=None):
-        self.var_type = var_type
+                set_method=None, have_set=True,
+                instance_init_value=None,
+                ):
+        self.visibility = visibility
+        self.v_type = v_type
         self.name = name
         self.name2 = name[0].upper() + name[1:]
         self.get_method = get_method 
-        self.set_method = set_method        
+        self.set_method = set_method
         self.io_type = io_type
         self.have_get = have_get
         self.have_set = have_set
         self.instance_init_value = instance_init_value
     
     def get_variable_delcaration(self):
-        return "\t" + self.var_type + " " + self.name + ";\n"
+        return "\t" + self.visibility + ' ' + self.v_type + ' ' + self.name + ';\n'
         
     def generate_variable(self, name):
         v = JavaVariableCodeGenerator(
-            var_type=self.var_type, name=name, io_type=self.io_type,
+            v_type=self.v_type, name=name, io_type=self.io_type,
             get_method=self.get_method, have_get=self.have_get,
             set_method=self.set_method, have_set=self.have_set,
             instance_init_value=self.instance_init_value
@@ -35,7 +56,7 @@ class JavaVariableCodeGenerator:
         if self.io_type is not None:
             return_type = self.io_type
         else: 
-            return_type = self.var_type
+            return_type = self.v_type
 
         if self.get_method is None and self.io_type is None:
             return  (
@@ -79,12 +100,10 @@ class JavaVariableCodeGenerator:
         init_value = ''
         if self.instance_init_value is not None:
             init_value = self.instance_init_value
-        return f'{self.name} = new {self.var_type}({init_value});\n'
+        return f'{self.name} = new {self.v_type}({init_value});\n'
             
     def accessor_code(self):
         return self.getter_code() + self.setter_code() +'\n\n'
-        
-
 
 
 def write_class_to_file(filename, classname, v_lists, package_name=None):
